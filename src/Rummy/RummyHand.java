@@ -34,7 +34,7 @@ public class RummyHand extends Hand {
 	final String setOf4 = "SET4";
 
 	final String keysForFour = "SEQ4 SET4 SEQH4";
-	final String keysForThree = "SEQ3 SET3 SEQ2 SEQ3H SET2";
+	final String keysForThree = "SEQ3 SET3 SEQ2 SEQH3 SET2";
 	
 	final String toAddOne = "SEQH4 SEQ2 SEQH3 SET2";
 
@@ -210,7 +210,7 @@ public class RummyHand extends Hand {
 	public void getPossibleSetLength() {
 		for (Character suit : setMap.keySet()) {
 			int count = setMap.get(suit);
-			String key = "Singles";
+			String key = "extras";
 			if (count == 2)
 				key = setOf2;
 			if (count == 3)
@@ -273,11 +273,14 @@ public class RummyHand extends Hand {
 		for (String s : keysForThree.split(" ")) {
 			if(setAndSeq.containsKey(s)){
 				value = setAndSeq.get(s);
-				if(value>0 && CARD_GROUPS>0){
-					CARD_GROUPS-=3*value;
-					if(toAddOne.contains(s)){
-						System.out.println(s+" "+cardsNeeded);
-						cardsNeeded+=1*value;
+				if(value>0){
+					for(int i=0;i<value;++i){
+						if(CARD_GROUPS>1)
+							CARD_GROUPS-=3;
+							if(toAddOne.contains(s)){
+								System.out.println(s+" "+cardsNeeded);
+								cardsNeeded+=1;
+							}
 					}
 				}
 			}
