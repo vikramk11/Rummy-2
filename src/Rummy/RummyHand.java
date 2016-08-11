@@ -33,6 +33,11 @@ public class RummyHand extends Hand {
 	final String setOf3 = "SET3";
 	final String setOf4 = "SET4";
 
+	final String keysForFour = "SEQ4 SET4 SEQ4H";
+	final String keysForThree = "SEQ3 SET3 SEQ2 SEQ3H SET2";
+	
+	final String toAddOne = "SEQ4H SEQ2 SEQ3H SET2";
+
 	Card joker;
 	int availableJokers = 0;
 	int MIN_SEQUENCES_TO_WIN = 2;
@@ -82,8 +87,11 @@ public class RummyHand extends Hand {
 
 	public void convertToSetMap() {
 		for (String key : sequenceInSuit.keySet()) {
+			
+			String value = sequenceInSuit.get(key);
+			value = value.substring(0, value.length()-2);
 
-			char[] cards = sequenceInSuit.get(key).toCharArray();
+			char[] cards = value.toCharArray();
 
 			for (char c : cards) {
 				if (c != '*') {
@@ -112,7 +120,7 @@ public class RummyHand extends Hand {
 		}
 
 	}
-	
+
 	public Set<String> subString(String s, String t) {
 		int[][] table = new int[s.length()][t.length()];
 		int longest = 0;
@@ -124,8 +132,7 @@ public class RummyHand extends Hand {
 					continue;
 				}
 
-				table[i][j] = (i == 0 || j == 0) ? 1
-						: 1 + table[i - 1][j - 1];
+				table[i][j] = (i == 0 || j == 0) ? 1 : 1 + table[i - 1][j - 1];
 				if (table[i][j] > longest) {
 					longest = table[i][j];
 					result.clear();
@@ -137,35 +144,12 @@ public class RummyHand extends Hand {
 		}
 		return result;
 	}
-	
-//	public String subString(String str1, String str2) {
-//		int l1 = str1.length();
-//		int l2 = str2.length();
-//
-//		int[][] arr = new int[l1 + 1][l2 + 1];
-//		int len = 0, pos = -1;
-//
-//		for (int x = 1; x < l1 + 1; x++) {
-//			for (int y = 1; y < l2 + 1; y++) {
-//				if (str1.charAt(x - 1) == str2.charAt(y - 1)) {
-//					arr[x][y] = arr[x - 1][y - 1] + 1;
-//					if (arr[x][y] > len) {
-//						len = arr[x][y];
-//						pos = x;
-//					}
-//				} else
-//					arr[x][y] = 0;
-//			}
-//		}
-//
-//		return str1.substring(pos - len, pos);
-//	}
 
 	public void getPossibleSeqLengthWithoutHoles() {
 		for (String suit : sequenceInSuit.keySet()) {
 			String cardsInSuit = sequenceInSuit.get(suit);
 			Set<String> allLCS = subString(possibleSequence, cardsInSuit);
-			for(String longestSequence: allLCS){
+			for (String longestSequence : allLCS) {
 				System.out.println(longestSequence);
 				int length = longestSequence.length();
 				String key = "Singles";
@@ -187,15 +171,15 @@ public class RummyHand extends Hand {
 		}
 	}
 
-	public void getPossibleSeqLengthWithHoles(){
+	public void getPossibleSeqLengthWithHoles() {
 		for (String suit : sequenceInSuit.keySet()) {
 			String cardsInSuit = occurencePattern(sequenceInSuit.get(suit));
 			Set<String> allLCS = subString(this.sequenceWithHole, cardsInSuit);
-			for(String longestSequence: allLCS){
-				System.out.println(suit+" "+longestSequence);
+			for (String longestSequence : allLCS) {
+				System.out.println(suit + " " + longestSequence);
 				int length = longestSequence.length();
 				String key = "Singles";
-				if (length == 3)
+				if (length == 3 && longestSequence.equals("1*1"))
 					key = sequenceOf3WithHole;
 				if (length == 4)
 					key = sequenceOf4WithHole;
@@ -209,7 +193,7 @@ public class RummyHand extends Hand {
 				}
 			}
 		}
-			
+
 	}
 
 	public String occurencePattern(String s) {
@@ -266,51 +250,43 @@ public class RummyHand extends Hand {
 		else
 			return cards.charAt(index - 1) == '*' && cards.charAt(index + 1) == '*';
 	}
-	
-	public int evaluateFor4333(){
-		int GROUPS_TO_COMPLETE = 4+3+3+3; 
+
+	public int evaluateFor43() {
+		int CARD_GROUPS = 7;
 		int cardsNeeded = 0;
-		for(String key: setAndSeq.keySet()){	
-			if(GROUPS_TO_COMPLETE>0){
-			 switch (key) {
-				case sequenceOf4: {
-					GROUPS_TO_COMPLETE-=4;
-					break;
+		int value;
+
+		for (String s : keysForFour.split(" ")) {
+			if(setAndSeq.containsKey(s)){
+				value = setAndSeq.get(s);
+				if(value>0 && CARD_GROUPS>3){
+					CARD_GROUPS-=4;
+					if(toAddOne.contains(s)){
+						cardsNeeded++;
+						System.out.println(s);
+					}
 				}
-				case sequenceOf4WithHole: {
-					GROUPS_TO_COMPLETE-=4;
-					cardsNeeded++;
-					break;
-				}
-				case sequenceOf3: {
-				    GROUPS_TO_COMPLETE-=3;
-				    break;
-				}
-				case sequenceOf2: {
-					GROUPS_TO_COMPLETE-=3;
-					cardsNeeded++;
-					break;
-				}
-				case setOf2:{
-					GROUPS_TO_COMPLETE-=3;
-					cardsNeeded++;
-					break;
-				}
-				case setOf3:{
-					GROUPS_TO_COMPLETE-=3;
-					break;
-				}
-				case setOf4:{
-					GROUPS_TO_COMPLETE-=4;
-					break;
-				}
-				default: {
-				    
-				}
-			 }
 			}
 		}
-		return cardsNeeded+GROUPS_TO_COMPLETE;
+		
+		
+		for (String s : keysForThree.split(" ")) {
+			if(setAndSeq.containsKey(s)){
+				value = setAndSeq.get(s);
+				if(value>0 && CARD_GROUPS>0){
+					CARD_GROUPS-=3*value;
+					if(toAddOne.contains(s)){
+						System.out.println(s+" "+cardsNeeded);
+						cardsNeeded+=1*value;
+					}
+				}
+			}
+		}
+		
+		if(CARD_GROUPS==4||CARD_GROUPS==3)
+			return cardsNeeded+CARD_GROUPS-1;
+		
+		return cardsNeeded+CARD_GROUPS;
 	}
 
 	public int evaluate() {
@@ -332,8 +308,7 @@ public class RummyHand extends Hand {
 
 		System.out.println(setAndSeq);
 		System.out.println("Joker Count: " + availableJokers);
-		
-		System.out.println(evaluateFor4333());
-		return 0;
+
+		return evaluateFor43()-availableJokers;
 	}
 }

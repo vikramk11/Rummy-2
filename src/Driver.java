@@ -11,7 +11,7 @@ public class Driver {
 			joker=deck.removeCardOnTop();
 			RummyHand hand = new RummyHand(joker);
 
-			for(int i=0;i<13;i++){
+			for(int i=0;i<7;i++){
 				hand.addCard(deck.removeCardOnTop());
 			}	
 //			hand.addCard(new Card("A","SPADE"));
@@ -29,7 +29,7 @@ public class Driver {
 //			hand.addCard(new Card("Q","SPADE"));	
 
 			System.out.println("Joker Card: "+joker);
-			hand.evaluate();
+			System.out.println("Cards Needed:"+hand.evaluate());
 			
 			
 	}
