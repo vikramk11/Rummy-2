@@ -1,1 +1,1 @@
-# Rummy-2
+# Rummy
