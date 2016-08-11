@@ -25,18 +25,18 @@ public class RummyHand extends Hand {
 	final String sequenceOf4 = "SEQ4";
 	final String sequenceOf5 = "SEQ5";
 
-	final String sequenceOf3WithHole = "SEQ3H";
-	final String sequenceOf4WithHole = "SEQ4H";
-	final String sequenceOf5WithHole = "SEQ5H";
+	final String sequenceOf3WithHole = "SEQH3";
+	final String sequenceOf4WithHole = "SEQH4";
+	final String sequenceOf5WithHole = "SEQH5";
 
 	final String setOf2 = "SET2";
 	final String setOf3 = "SET3";
 	final String setOf4 = "SET4";
 
-	final String keysForFour = "SEQ4 SET4 SEQ4H";
+	final String keysForFour = "SEQ4 SET4 SEQH4";
 	final String keysForThree = "SEQ3 SET3 SEQ2 SEQ3H SET2";
 	
-	final String toAddOne = "SEQ4H SEQ2 SEQ3H SET2";
+	final String toAddOne = "SEQH4 SEQ2 SEQH3 SET2";
 
 	Card joker;
 	int availableJokers = 0;
@@ -152,7 +152,7 @@ public class RummyHand extends Hand {
 			for (String longestSequence : allLCS) {
 				System.out.println(longestSequence);
 				int length = longestSequence.length();
-				String key = "Singles";
+				String key = "extras";
 				if (length == 2)
 					key = sequenceOf2;
 				if (length == 3)
@@ -178,7 +178,7 @@ public class RummyHand extends Hand {
 			for (String longestSequence : allLCS) {
 				System.out.println(suit + " " + longestSequence);
 				int length = longestSequence.length();
-				String key = "Singles";
+				String key = "extras";
 				if (length == 3 && longestSequence.equals("1*1"))
 					key = sequenceOf3WithHole;
 				if (length == 4)
